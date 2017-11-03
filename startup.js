@@ -29,7 +29,9 @@ chrome.runtime.onMessage.addListener(function(request, sender) {
 	}
 	if(request.action == "close"){
 		chrome.tabs.remove(sender.tab.id);
-		var next = queue.splice(queue.length - 1, 1);
+		if(queue.length < 1)return;
+		var nxt = queue.splice(queue.length - 1, 1);
+		next(nxt[0]);
 	}
 });
 chrome.tabs.query({active: true},

@@ -6,6 +6,7 @@ chrome.runtime.sendMessage({
 }
 function onWindow(){
 var docinner = document.getElementsByClassName("channel-panels-container");
+slog("Wait for the page")
 setTimeout(function() {
 	chrome.runtime.sendMessage({action: "close"});
 }, 20000);
@@ -21,7 +22,17 @@ var doci = docin.replace(/ \(at\) | \(at\)|\(at\) |\(at\)| \( at \) | \( at \)|\
 var doc = doci.split(/[^.@A-Za-z0-9]/);
 for(i = 0; i < doc.length;i++){
 	if(doc[i].includes("@") && doc[i].includes(".") && !doc[i].endsWith(".") && !doc[i].endsWith("html")){
-		chrome.runtime.sendMessage({action: "email", source: document.getElementsByClassName("tw-stat__value").item(0).innerHTML.replace(",", "") + "," + doc[i]});
+		slog("Found:");
+		var item = document.getElementsByClassName("align-items-stretch flex flex-shrink-0 flex-nowrap").item(0);
+	    var input = item.getElementsByTagName("a");
+		var out;
+		for(y = 0;y < input.length;y++){
+		    if(input[y].getAttribute("data-a-target") == "followers-channel-header-item"){
+				out = input[y].getElementsByClassName("channel-header__item-count flex mg-l-05").item(0).getElementsByClassName("font-size-5").item(0).innerHTML.replace(",", "");
+				break;
+			}
+		}
+		chrome.runtime.sendMessage({action: "email", source: out + "," + doc[i]});
 		break;
 	}
 }
