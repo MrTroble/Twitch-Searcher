@@ -24,13 +24,10 @@ chrome.runtime.onMessage.addListener(function(request, sender) {
 		var towrite = nmspl[nmspl.length - 1] + "," + request.source + ";";
 		addlog(towrite);
 	}
-	if(request.action == "log"){
-		addlog(request.source);
-	}
-	if(request.action == "close"){
+	if(request.action === "close"){
 		chrome.tabs.remove(sender.tab.id);
-		if(queue.length < 1)return;
-		var nxt = queue.splice(queue.length - 1, 1);
+		if(queue.length < 1){return;}
+		var nxt = queue.splice(0, 1);
 		next(nxt[0]);
 	}
 });
